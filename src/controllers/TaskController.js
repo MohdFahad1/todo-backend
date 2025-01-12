@@ -29,7 +29,6 @@ const getTasks = async (req, res) => {
     })
       .populate("owner", "name email")
       .populate("sharedWith", "name email");
-    details;
 
     res.json(tasks);
   } catch (error) {
@@ -71,20 +70,33 @@ const updateTask = async (req, res) => {
   const { title, description, status, sharedWith } = req.body;
 
   try {
-    let task = await Task.findById(taskId);
+    let task = await Task.findById(taskId)
+      .populate("owner", "name email")
+      .populate("sharedWith", "name email");
 
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
 
-    if (task.owner.toString() !== req.user._id.toString()) {
+    const isOwner = task.owner._id.toString() === req.user._id.toString();
+    const isSharedWith = task.sharedWith.some(
+      (user) => user._id.toString() === req.user._id.toString()
+    );
+
+    if (!isOwner && !isSharedWith) {
       return res.status(403).json({ message: "Access denied" });
+    }
+
+    if (sharedWith && !isOwner) {
+      return res
+        .status(403)
+        .json({ message: "Only the owner can modify shared users" });
     }
 
     if (title) task.title = title;
     if (description) task.description = description;
     if (status) task.status = status;
-    if (sharedWith) task.sharedWith = sharedWith;
+    if (sharedWith && isOwner) task.sharedWith = sharedWith;
 
     await task.save();
 

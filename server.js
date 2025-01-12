@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 const connectToMongo = require("./src/db/db");
 const authRoutes = require("./src/routes/authRoutes");
+const taskRoutes = require("./src/routes/taskRoutes");
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/tasks", taskRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
