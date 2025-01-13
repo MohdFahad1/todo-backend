@@ -17,7 +17,7 @@ const createTask = async (req, res) => {
 
     res.status(201).json(task);
   } catch (error) {
-    console.error("Error in creatig task:", error.message);
+    console.error("Error in creating task:", error.message);
     res.status(500).send("Server error");
   }
 };
