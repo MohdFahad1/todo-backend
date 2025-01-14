@@ -1,4 +1,4 @@
-const { updateTask } = require("../../src/controllers/taskController");
+const { updateTask } = require("../../src/controllers/TaskController");
 const connectToMongo = require("../../src/db/db");
 const initMiddleware = require("../../lib/initMiddleware");
 const Cors = require("cors");
